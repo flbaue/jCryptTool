@@ -15,16 +15,110 @@
 
 package com.github.flbaue.jcrypttool;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 /**
  * Created by Florian Bauer on 02.01.15.
  */
 public class EncryptionService {
 
-    public static void encrypt(String inputFileName, String outputFileName, String password) {
-        new Encryptor().run(inputFileName, outputFileName, password);
+    public void encrypt(String inputFileName, String outputFileName, String password) {
+
+        byte[] key = generateKey(password);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher;
+
+        try {
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(new byte[cipher.getBlockSize()]);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        }
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new BufferedInputStream(new FileInputStream(inputFileName));
+            out = new BufferedOutputStream(new GZIPOutputStream(new CipherOutputStream(new FileOutputStream(outputFileName), cipher)));
+
+            processStreams(in, out, cipher.getBlockSize());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeStream(in);
+            closeStream(out);
+        }
     }
 
-    public static void decrypt(String inputFileName, String outputFileName, String password) {
-        new Decryptor().run(inputFileName, outputFileName, password);
+
+    public void decrypt(String inputFileName, String outputFileName, String password) {
+        byte[] key = generateKey(password);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher;
+
+        try {
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(new byte[cipher.getBlockSize()]);
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        }
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new BufferedInputStream(new GZIPInputStream(new CipherInputStream(new FileInputStream(inputFileName), cipher)));
+            out = new BufferedOutputStream(new FileOutputStream(outputFileName));
+
+            processStreams(in, out, cipher.getBlockSize());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeStream(in);
+            closeStream(out);
+        }
+    }
+
+    private void processStreams(InputStream in, OutputStream out, int bufferSize) throws IOException {
+        byte[] buffer = new byte[bufferSize];
+        int bytes;
+        while ((bytes = in.read(buffer)) != -1) {
+            out.write(buffer, 0, bytes);
+        }
+    }
+
+    private byte[] generateKey(String password) {
+        try {
+            byte[] passwordBytes = password.getBytes("UTF-8");
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+            byte[] passwordHash = messageDigest.digest(passwordBytes);
+            return Arrays.copyOf(passwordHash, 16);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void closeStream(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -25,7 +25,7 @@ public class ConsoleStarter {
     }
 
     private void run(String[] args) {
-        if (args.length != 0) {
+        if (args.length != 4) {
             printHelp();
         } else {
             String mode = args[0];
@@ -33,12 +33,13 @@ public class ConsoleStarter {
             String outputFileName = args[2];
             String password = args[3];
 
+            EncryptionService encryptionService = new EncryptionService();
             switch (mode) {
                 case "-e":
-                    EncryptionService.encrypt(inputFileName, outputFileName, password);
+                    encryptionService.encrypt(inputFileName, outputFileName, password);
                     break;
                 case "-d":
-                    EncryptionService.decrypt(inputFileName, outputFileName, password);
+                    encryptionService.decrypt(inputFileName, outputFileName, password);
                     break;
                 default:
                     System.out.println("Unknown mode: " + mode);
@@ -49,6 +50,11 @@ public class ConsoleStarter {
     }
 
     private void printHelp() {
-
+        System.out.println("jCryptTool Help");
+        System.out.println("==============================");
+        System.out.println("1. param:\t-e (encryption) / -d (decryption)");
+        System.out.println("2. param:\tinput file name");
+        System.out.println("3. param:\toutput file name");
+        System.out.println("4. param:\tpassword");
     }
 }
