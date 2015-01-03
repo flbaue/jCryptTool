@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class Progress {
     private int progress;
+    private boolean finished;
     private List<ProgressListener> progressListenerList = new LinkedList<>();
 
     public void updateProgress(int value) {
@@ -32,6 +33,14 @@ public class Progress {
         for (ProgressListener listener : progressListenerList) {
             listener.progressUpdate(progressEvent);
         }
+    }
+
+    void setFinished() {
+        finished = true;
+    }
+
+    public boolean isFinished() {
+        return finished;
     }
 
     public void addProgressListener(ProgressListener listener) {

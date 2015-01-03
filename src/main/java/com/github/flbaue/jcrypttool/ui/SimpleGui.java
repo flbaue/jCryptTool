@@ -47,7 +47,7 @@ public class SimpleGui {
         encryptionService = new EncryptionService();
     }
 
-    public static void main(String[] args) {
+    public void run() {
         JFrame frame = new JFrame("SimpleGui");
         frame.setContentPane(new SimpleGui().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

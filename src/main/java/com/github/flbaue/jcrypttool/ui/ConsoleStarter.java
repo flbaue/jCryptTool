@@ -29,9 +29,9 @@ public class ConsoleStarter implements ProgressListener {
     }
 
     private void run(String[] args) {
-        if (args.length != 4) {
+        if (args.length != 4 && args.length != 1) {
             printHelp();
-        } else {
+        } else if (args.length == 4) {
             String mode = args[0];
 
             EncryptionSettings encryptionSettings = new EncryptionSettings();
@@ -54,13 +54,18 @@ public class ConsoleStarter implements ProgressListener {
                     return;
             }
             progress.addProgressListener(this);
+        } else if (args.length == 1) {
+            String mode = args[0];
+            if (mode.equals("-g")) {
+                new SimpleGui().run();
+            }
         }
     }
 
     private void printHelp() {
         System.out.println("jCryptTool Help");
         System.out.println("==============================");
-        System.out.println("1. param:\t-e (encryption) / -d (decryption)");
+        System.out.println("1. param:\t-e (encryption) / -d (decryption) / -g (GUI, without other parameters)");
         System.out.println("2. param:\tinput file name");
         System.out.println("3. param:\toutput file name");
         System.out.println("4. param:\tpassword");

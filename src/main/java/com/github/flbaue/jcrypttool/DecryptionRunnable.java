@@ -82,6 +82,7 @@ public class DecryptionRunnable implements Runnable {
             bytesProcessed += bytes;
             progress.updateProgress((int) ((100.0 * bytesProcessed) / totalBytesToProcess));
         }
+        progress.setFinished();
     }
 
     private byte[] generateKey(String password) {
