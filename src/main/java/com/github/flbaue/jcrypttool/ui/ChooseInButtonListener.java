@@ -16,19 +16,18 @@
 package com.github.flbaue.jcrypttool.ui;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
  * Created by Florian Bauer on 02.01.15.
  */
-public class ChooseButtonListener implements ActionListener {
+public class ChooseInButtonListener implements ActionListener {
 
-    private final Component parent;
+    private final JButton parent;
     private JTextField textField;
 
-    public ChooseButtonListener(Component parent, JTextField textField) {
+    public ChooseInButtonListener(JButton parent, JTextField textField) {
         this.parent = parent;
         this.textField = textField;
     }
@@ -36,6 +35,7 @@ public class ChooseButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
+
         int returnVal = chooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             textField.setText(chooser.getSelectedFile().getAbsolutePath());

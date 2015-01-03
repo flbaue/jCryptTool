@@ -46,28 +46,40 @@ public class DecryptionRunnable implements Runnable {
         byte[] key = generateKey(encryptionSettings.password);
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher;
+        byte[] startVector;
+        try (InputStream fileInputStream = new BufferedInputStream(new FileInputStream(encryptionSettings.inputFile))) {
+            try {
+                cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                startVector = initStartVector(cipher.getBlockSize(), fileInputStream);
+                IvParameterSpec ivParameterSpec = new IvParameterSpec(startVector);
+                cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+                throw new RuntimeException(e);
+            }
 
-        try {
-            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(new byte[cipher.getBlockSize()]);
-            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
-            throw new RuntimeException(e);
-        }
+            InputStream in = null;
+            OutputStream out = null;
+            try {
 
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new BufferedInputStream(new GZIPInputStream(new CipherInputStream(new FileInputStream(encryptionSettings.inputFile), cipher)));
-            out = new BufferedOutputStream(new FileOutputStream(encryptionSettings.outputFile));
+                in = new GZIPInputStream(new CipherInputStream(fileInputStream, cipher));
+                out = new BufferedOutputStream(new FileOutputStream(encryptionSettings.outputFile));
 
-            processStreams(in, out, cipher.getBlockSize());
+                processStreams(in, out, cipher.getBlockSize());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                closeStream(in);
+                closeStream(out);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            closeStream(in);
-            closeStream(out);
         }
+    }
+
+    private byte[] initStartVector(int blockSize, InputStream fileInputStream) throws IOException {
+        byte[] vector = new byte[blockSize];
+        fileInputStream.read(vector);
+        return vector;
     }
 
     private void processStreams(InputStream in, OutputStream out, int bufferSize) throws IOException {

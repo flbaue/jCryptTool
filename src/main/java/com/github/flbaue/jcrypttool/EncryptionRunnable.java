@@ -21,10 +21,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
@@ -43,31 +40,49 @@ public class EncryptionRunnable implements Runnable {
 
     @Override
     public void run() {
-        byte[] key = generateKey(encryptionSettings.password);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
-        Cipher cipher;
+        final byte[] key = generateKey(encryptionSettings.password);
+        final SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        final Cipher cipher;
+        final byte[] startVector;
 
-        try {
-            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(new byte[cipher.getBlockSize()]);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
-            throw new RuntimeException(e);
-        }
+        try (OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(encryptionSettings.outputFile))) {
 
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new BufferedInputStream(new FileInputStream(encryptionSettings.inputFile));
-            out = new BufferedOutputStream(new GZIPOutputStream(new CipherOutputStream(new FileOutputStream(encryptionSettings.outputFile), cipher)));
+            try {
+                cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                startVector = initStartVector(cipher.getBlockSize(), fileOutputStream);
+                final IvParameterSpec ivParameterSpec = new IvParameterSpec(startVector);
+                cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+                throw new RuntimeException(e);
+            }
 
-            processStreams(in, out, cipher.getBlockSize());
+
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = new BufferedInputStream(new FileInputStream(encryptionSettings.inputFile));
+
+                out = new GZIPOutputStream(new CipherOutputStream(fileOutputStream, cipher));
+
+                processStreams(in, out, cipher.getBlockSize());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                closeStream(in);
+                closeStream(out);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            closeStream(in);
-            closeStream(out);
         }
+    }
+
+    private byte[] initStartVector(int blockSize, OutputStream fileOutputStream) throws NoSuchAlgorithmException, IOException {
+        byte[] vector = new byte[blockSize];
+        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+        secureRandom.nextBytes(vector);
+
+        fileOutputStream.write(vector);
+        return vector;
     }
 
     private void processStreams(InputStream in, OutputStream out, int bufferSize) throws IOException {

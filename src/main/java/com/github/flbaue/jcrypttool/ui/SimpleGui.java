@@ -39,8 +39,8 @@ public class SimpleGui {
     private EncryptionService encryptionService;
 
     public SimpleGui() {
-        chooseInFileButton.addActionListener(new ChooseButtonListener(chooseInFileButton, inputFileTextField));
-        chooseOutFileButton.addActionListener(new ChooseButtonListener(chooseOutFileButton, outputFileTextField));
+        chooseInFileButton.addActionListener(new ChooseInButtonListener(chooseInFileButton, inputFileTextField));
+        chooseOutFileButton.addActionListener(new ChooseOutButtonListener(chooseOutFileButton, outputFileTextField));
         encryptButton.addActionListener(new EncryptionButtonListener(this));
         decryptButton.addActionListener(new DecryptionButtonListener(this));
 
