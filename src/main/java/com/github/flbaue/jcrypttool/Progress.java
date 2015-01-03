@@ -15,25 +15,26 @@
 
 package com.github.flbaue.jcrypttool;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by Florian Bauer on 02.01.15.
  */
-public class EncryptionService {
+public class Progress {
+    private int progress;
+    private List<ProgressListener> progressListenerList = new LinkedList<>();
 
-    public Progress encrypt(EncryptionSettings encryptionSettings) {
-        Progress progress = new Progress();
-        EncryptionRunnable encryptionRunnable = new EncryptionRunnable(encryptionSettings, progress);
-        Thread encryptionThread = new Thread(encryptionRunnable);
-        encryptionThread.start();
-        return progress;
+    public void updateProgress(int value) {
+        progress = value;
+        ProgressEvent progressEvent = new ProgressEvent(value);
+
+        for (ProgressListener listener : progressListenerList) {
+            listener.progressUpdate(progressEvent);
+        }
     }
 
-
-    public Progress decrypt(EncryptionSettings encryptionSettings) {
-        Progress progress = new Progress();
-        DecryptionRunnable decryptionRunnable = new DecryptionRunnable(encryptionSettings, progress);
-        Thread decryptionThread = new Thread(decryptionRunnable);
-        decryptionThread.start();
-        return progress;
+    public void addProgressListener(ProgressListener listener) {
+        progressListenerList.add(listener);
     }
 }

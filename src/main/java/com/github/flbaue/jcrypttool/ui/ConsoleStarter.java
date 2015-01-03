@@ -13,12 +13,16 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
+package com.github.flbaue.jcrypttool.ui;
+
+import com.github.flbaue.jcrypttool.*;
+
+import java.io.File;
 
 /**
  * Created by Florian Bauer on 02.01.15.
  */
-public class ConsoleStarter {
+public class ConsoleStarter implements ProgressListener {
 
     public static void main(String[] args) {
         new ConsoleStarter().run(args);
@@ -29,23 +33,27 @@ public class ConsoleStarter {
             printHelp();
         } else {
             String mode = args[0];
-            String inputFileName = args[1];
-            String outputFileName = args[2];
-            String password = args[3];
+
+            EncryptionSettings encryptionSettings = new EncryptionSettings();
+            encryptionSettings.inputFile = new File(args[1]);
+            encryptionSettings.outputFile = new File(args[2]);
+            encryptionSettings.password = args[3];
+            Progress progress;
 
             EncryptionService encryptionService = new EncryptionService();
             switch (mode) {
                 case "-e":
-                    encryptionService.encrypt(inputFileName, outputFileName, password);
+                    progress = encryptionService.encrypt(encryptionSettings);
                     break;
                 case "-d":
-                    encryptionService.decrypt(inputFileName, outputFileName, password);
+                    progress = encryptionService.decrypt(encryptionSettings);
                     break;
                 default:
                     System.out.println("Unknown mode: " + mode);
                     printHelp();
-                    break;
+                    return;
             }
+            progress.addProgressListener(this);
         }
     }
 
@@ -56,5 +64,10 @@ public class ConsoleStarter {
         System.out.println("2. param:\tinput file name");
         System.out.println("3. param:\toutput file name");
         System.out.println("4. param:\tpassword");
+    }
+
+    @Override
+    public void progressUpdate(ProgressEvent progressEvent) {
+        System.out.println(progressEvent.value + "%");
     }
 }
