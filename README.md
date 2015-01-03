@@ -1,11 +1,9 @@
 # jCryptTool (alpha) #
 
-A file encryption tool with commandline interface and a simple gui.
+A file encryption tool with command line interface and a simple gui.
 Files are compressed with GZIP and encrypted with AES 128bit (Java limitation).
 
-WARNING:
-The file format is not yet fixed and can change with updates without any backward compatibility.
-
+*WARNING: The file format is not yet fixed and can change with updates without any backward compatibility.*
 
 ## License ##
 Copyright 2015 Florian Bauer, https://github.com/flbaue
