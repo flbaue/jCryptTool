@@ -2,13 +2,9 @@
 
 
 ## Current Version ##
-The file starts with the initialization block which has a length of 32 byte. It consists of two parts. The first part is
-the salt which has a length of 16 byte. It is followed by the initialization vector (iv) which has a length of 16 byte
-as well. After the initialization block the encrypted data begins. The data itself is first zipped with gzip and than
-encrypted.
+The file starts with the initialization block which has a length of 32 byte. It consists of two parts. The first part is the salt which has a length of 16 byte. It is followed by the initialization vector (iv) which has a length of 16 byte as well. After the initialization block the encrypted data begins. The data itself is first compressed with gzip and than encrypted.
 
-File:
-
+Illustration:
 
 ```
 [byte_1, byte_2, byte_3, ... , byte_32, byte_33, ...]
