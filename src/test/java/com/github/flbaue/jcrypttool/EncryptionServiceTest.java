@@ -101,4 +101,39 @@ public class EncryptionServiceTest {
 
         assertEquals(encryptionSettings.inputFile.length(), encryptionSettings2.outputFile.length());
     }
+
+
+    public void testSpeed() throws Exception {
+        long dataSize = 10485760 * 10;
+        File file = TestDataGenerator.generateFile(dataSize);
+        EncryptionService encryptionService = new EncryptionService();
+        EncryptionSettings encryptionSettings = new EncryptionSettings();
+
+        int iterations = 5;
+        long[] runtimes = new long[iterations];
+        for (int i = 0; i < iterations; i++) {
+            encryptionSettings.inputFile = file;
+            encryptionSettings.outputFile = new File("testSpeed.data");
+            encryptionSettings.password = "test12345";
+            Progress progress = encryptionService.encrypt(encryptionSettings);
+
+            while (!progress.isFinished()) {
+                Thread.sleep(500);
+            }
+            runtimes[i] = progress.getRuntime();
+        }
+
+        System.out.println("Buffer: " + EncryptionService.STREAM_BUFFER_LENGTH + " Byte");
+        System.out.println("Data: " + dataSize / 1024 / 1024 + " MByte");
+        System.out.println("Avg Runtime: " + avg(runtimes) + " msec");
+
+    }
+
+    private long avg(long[] runtimes) {
+        long runtime = 0;
+        for (long r : runtimes) {
+            runtime += r;
+        }
+        return runtime / runtimes.length;
+    }
 }

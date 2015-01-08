@@ -25,6 +25,8 @@ public class Progress {
     private int progress;
     private boolean finished;
     private List<ProgressListener> progressListenerList = new LinkedList<>();
+    private long startTime;
+    private long endTime;
 
     public void updateProgress(int value) {
         progress = value;
@@ -36,6 +38,7 @@ public class Progress {
     }
 
     void setFinished() {
+        endTime = System.currentTimeMillis();
         finished = true;
     }
 
@@ -45,5 +48,13 @@ public class Progress {
 
     public void addProgressListener(ProgressListener listener) {
         progressListenerList.add(listener);
+    }
+
+    public long getRuntime() {
+        return endTime - startTime;
+    }
+
+    void start() {
+        startTime = System.currentTimeMillis();
     }
 }

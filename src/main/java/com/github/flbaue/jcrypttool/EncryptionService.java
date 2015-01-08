@@ -15,10 +15,6 @@
 
 package com.github.flbaue.jcrypttool;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import java.security.Security;
-
 /**
  * Created by Florian Bauer on 02.01.15.
  */
@@ -28,10 +24,7 @@ public class EncryptionService {
     public static int BLOCK_LENGTH = 16; // in byte
     public static int SALT_LENGTH = 16; // in byte
     public static int KEY_ITERATIONS = 20000;
-
-    public EncryptionService() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
+    public static int STREAM_BUFFER_LENGTH = 512; // in byte
 
     public Progress encrypt(EncryptionSettings encryptionSettings) {
         Progress progress = new Progress();
@@ -40,7 +33,6 @@ public class EncryptionService {
         encryptionThread.start();
         return progress;
     }
-
 
     public Progress decrypt(EncryptionSettings encryptionSettings) {
         Progress progress = new Progress();

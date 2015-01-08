@@ -100,7 +100,7 @@ public class DecryptionRunnable implements Runnable {
         long totalBytesToProcess = encryptionSettings.inputFile.length();
         long bytesProcessed = 0;
 
-        byte[] buffer = new byte[EncryptionService.BLOCK_LENGTH];
+        byte[] buffer = new byte[EncryptionService.STREAM_BUFFER_LENGTH];
         int bytes;
         while ((bytes = in.read(buffer)) != -1) {
             out.write(buffer, 0, bytes);

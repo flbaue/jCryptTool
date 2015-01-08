@@ -47,6 +47,8 @@ public class EncryptionRunnable implements Runnable {
 
     @Override
     public void run() {
+        progress.start();
+
         final byte[] salt = generateSalt();
         final byte[] key = generateKey(encryptionSettings.password, salt);
         final byte[] iv;
@@ -82,6 +84,8 @@ public class EncryptionRunnable implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        progress.setFinished();
     }
 
     private void writeInitBlock(OutputStream fileOutputStream, byte[] salt, byte[] iv) throws IOException {
@@ -105,7 +109,7 @@ public class EncryptionRunnable implements Runnable {
         long totalBytesTpProcess = encryptionSettings.inputFile.length();
         long bytesProcessed = 0;
 
-        byte[] buffer = new byte[EncryptionService.BLOCK_LENGTH];
+        byte[] buffer = new byte[EncryptionService.STREAM_BUFFER_LENGTH];
         int bytes;
         while ((bytes = in.read(buffer)) != -1) {
             out.write(buffer, 0, bytes);
@@ -113,7 +117,6 @@ public class EncryptionRunnable implements Runnable {
             bytesProcessed += bytes;
             progress.updateProgress((int) ((100.0 * bytesProcessed) / totalBytesTpProcess));
         }
-        progress.setFinished();
     }
 
     private byte[] generateKey(String password, byte[] salt) {
