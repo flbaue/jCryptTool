@@ -1,5 +1,7 @@
 # jCryptTool (alpha) #
 
+[![Build Status](https://travis-ci.org/flbaue/jCryptTool.svg?branch=master)](https://travis-ci.org/flbaue/jCryptTool)
+
 A file encryption tool with command line interface and a simple gui.
 Files are compressed with GZIP and encrypted with AES 256 bit using BouncyCastle.
 
