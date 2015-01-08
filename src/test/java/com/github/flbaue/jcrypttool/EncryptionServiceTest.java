@@ -28,7 +28,7 @@ public class EncryptionServiceTest {
     public void testEncrypt() throws Exception {
         EncryptionSettings encryptionSettings = new EncryptionSettings();
         encryptionSettings.inputFile = new File(getClass().getResource("/testIn.txt").getFile());
-        encryptionSettings.outputFile = new File(System.getProperty("java.io.tmpdir") + "testOut.txt");
+        encryptionSettings.outputFile = new File("testOut.txt");
         encryptionSettings.password = "test12345";
 
         encryptionSettings.outputFile.delete();
@@ -48,7 +48,7 @@ public class EncryptionServiceTest {
     public void testDecrypt() throws Exception {
         EncryptionSettings encryptionSettings = new EncryptionSettings();
         encryptionSettings.inputFile = new File(getClass().getResource("/testIn.data").getFile());
-        encryptionSettings.outputFile = new File(System.getProperty("java.io.tmpdir") + "testOut.data");
+        encryptionSettings.outputFile = new File("testOut.data");
         encryptionSettings.password = "password";
 
         encryptionSettings.outputFile.delete();
@@ -68,7 +68,7 @@ public class EncryptionServiceTest {
     public void testEncryptDecrypt() throws Exception {
         EncryptionSettings encryptionSettings = new EncryptionSettings();
         encryptionSettings.inputFile = new File(getClass().getResource("/testIn.txt").getFile());
-        encryptionSettings.outputFile = new File(System.getProperty("java.io.tmpdir") + "testOut2.data");
+        encryptionSettings.outputFile = new File("testOut2.data");
         encryptionSettings.password = "password";
 
         encryptionSettings.outputFile.delete();
@@ -85,7 +85,7 @@ public class EncryptionServiceTest {
 
         EncryptionSettings encryptionSettings2 = new EncryptionSettings();
         encryptionSettings2.inputFile = encryptionSettings.outputFile;
-        encryptionSettings2.outputFile = new File(System.getProperty("java.io.tmpdir") + "testOut3.data");
+        encryptionSettings2.outputFile = new File("testOut3.data");
         encryptionSettings2.password = "password";
 
         encryptionSettings2.outputFile.delete();
