@@ -13,11 +13,11 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.ui;
+package com.github.flbaue.jcrypttool.v1.ui;
 
-import com.github.flbaue.jcrypttool.EncryptionService;
-import com.github.flbaue.jcrypttool.EncryptionSettings;
-import com.github.flbaue.jcrypttool.Progress;
+import com.github.flbaue.jcrypttool.v1.EncryptionService;
+import com.github.flbaue.jcrypttool.v1.EncryptionSettings;
+import com.github.flbaue.jcrypttool.v1.Progress;
 
 import javax.swing.*;
 import java.io.File;

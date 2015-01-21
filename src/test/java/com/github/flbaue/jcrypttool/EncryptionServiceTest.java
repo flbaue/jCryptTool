@@ -15,6 +15,9 @@
 
 package com.github.flbaue.jcrypttool;
 
+import com.github.flbaue.jcrypttool.v1.EncryptionService;
+import com.github.flbaue.jcrypttool.v1.EncryptionSettings;
+import com.github.flbaue.jcrypttool.v1.Progress;
 import org.junit.Test;
 
 import java.io.File;

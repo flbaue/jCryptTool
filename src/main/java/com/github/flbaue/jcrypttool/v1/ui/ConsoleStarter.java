@@ -13,9 +13,9 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.ui;
+package com.github.flbaue.jcrypttool.v1.ui;
 
-import com.github.flbaue.jcrypttool.*;
+import com.github.flbaue.jcrypttool.v1.*;
 
 import java.io.File;
 

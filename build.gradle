@@ -16,10 +16,20 @@
 
 
 apply plugin: 'java'
+apply plugin: 'macAppBundle'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = '1.0'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'edu.sc.seis.gradle:macappbundle:2.0.0'
+    }
+}
 
 repositories {
     mavenCentral()
@@ -28,4 +38,14 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.51'
+    compile group: 'org.controlsfx', name: 'controlsfx', version: '8.20.8'
+}
+
+macAppBundle {
+    mainClassName = "com.github.flbaue.jcrypttool.v1.ui.ConsoleStarter"
+    icon = "myIcon.icns"
+    bundleJRE = true
+    arguments = ["-g"]
+    javaProperties.put("apple.laf.useScreenMenuBar", "true")
+    backgroundImage = "doc/macbackground.png"
 }

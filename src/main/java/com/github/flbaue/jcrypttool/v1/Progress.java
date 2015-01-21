@@ -13,7 +13,7 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
+package com.github.flbaue.jcrypttool.v1;
 
 import java.util.LinkedList;
 import java.util.List;

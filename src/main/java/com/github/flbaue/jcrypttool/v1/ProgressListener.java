@@ -13,24 +13,12 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.ui;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+package com.github.flbaue.jcrypttool.v1;
 
 /**
  * Created by Florian Bauer on 02.01.15.
  */
-public class EncryptionButtonListener implements ActionListener {
+public interface ProgressListener {
 
-    private SimpleGui simpleGui;
-
-    public EncryptionButtonListener(SimpleGui simpleGui) {
-        this.simpleGui = simpleGui;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        simpleGui.startEncryption();
-    }
+    void progressUpdate(ProgressEvent progressEvent);
 }

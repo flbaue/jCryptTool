@@ -13,12 +13,15 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
+package com.github.flbaue.jcrypttool.v1;
 
 /**
  * Created by Florian Bauer on 02.01.15.
  */
-public interface ProgressListener {
+public class ProgressEvent {
+    public final int value;
 
-    void progressUpdate(ProgressEvent progressEvent);
+    public ProgressEvent(final int value) {
+        this.value = value;
+    }
 }

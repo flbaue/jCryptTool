@@ -13,15 +13,22 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
+package com.github.flbaue.jcrypttool.experimental;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * Created by Florian Bauer on 02.01.15.
+ * Created by Florian Bauer on 15.01.15.
  */
-public class ProgressEvent {
-    public final int value;
+public class ThreadExperiments {
 
-    public ProgressEvent(final int value) {
-        this.value = value;
+    public static void main(String[] args) {
+        new ThreadExperiments().run();
+    }
+
+    private void run() {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
     }
 }

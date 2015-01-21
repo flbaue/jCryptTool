@@ -13,11 +13,11 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
+package com.github.flbaue.jcrypttool.v1;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.AESEngine;
-import org.bouncycastle.crypto.io.CipherInputStream;
+import org.bouncycastle.crypto.io.CipherOutputStream;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PKCS7Padding;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
@@ -28,38 +28,39 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by Florian Bauer on 02.01.15.
  */
-public class DecryptionRunnable implements Runnable {
+public class EncryptionRunnable implements Runnable {
 
-    private final EncryptionSettings encryptionSettings;
-    private final Progress progress;
+    private EncryptionSettings encryptionSettings;
+    private Progress progress;
 
-    public DecryptionRunnable(final EncryptionSettings encryptionSettings, final Progress progress) {
+    public EncryptionRunnable(EncryptionSettings encryptionSettings, Progress progress) {
         this.encryptionSettings = encryptionSettings;
         this.progress = progress;
     }
 
     @Override
     public void run() {
-        PaddedBufferedBlockCipher cipher;
-        byte[] key;
-        byte[] iv;
-        byte[] salt;
+        progress.start();
 
-        try (InputStream fileInputStream = new BufferedInputStream(new FileInputStream(encryptionSettings.inputFile))) {
+        final byte[] salt = generateSalt();
+        final byte[] key = generateKey(encryptionSettings.password, salt);
+        final byte[] iv;
+        final PaddedBufferedBlockCipher cipher;
+
+        try (OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(encryptionSettings.outputFile))) {
 
             cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new PKCS7Padding());
-            salt = extractSalt(fileInputStream);
-            iv = extractIV(fileInputStream);
-            key = generateKey(encryptionSettings.password, salt);
-            KeyParameter keyParam = new KeyParameter(key);
-            CipherParameters params = new ParametersWithIV(keyParam, iv);
-            cipher.init(false, params);
+            iv = generateIV();
+            final KeyParameter keyParam = new KeyParameter(key);
+            final CipherParameters params = new ParametersWithIV(keyParam, iv);
+            cipher.init(true, params);
 
             /*
             System.out.println(getClass().getName() + " salt:\t" + Base64.toBase64String(salt) + " (" + salt.length + " byte)");
@@ -70,8 +71,9 @@ public class DecryptionRunnable implements Runnable {
             InputStream in = null;
             OutputStream out = null;
             try {
-                in = new GZIPInputStream(new CipherInputStream(fileInputStream, cipher));
-                out = new BufferedOutputStream(new FileOutputStream(encryptionSettings.outputFile));
+                writeInitBlock(fileOutputStream, salt, iv);
+                in = new BufferedInputStream(new FileInputStream(encryptionSettings.inputFile));
+                out = new GZIPOutputStream(new CipherOutputStream(fileOutputStream, cipher));
                 processStreams(in, out);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -82,22 +84,29 @@ public class DecryptionRunnable implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        progress.setFinished();
     }
 
-    private byte[] extractSalt(InputStream fileInputStream) throws IOException {
-        byte[] salt = new byte[EncryptionService.SALT_LENGTH];
-        fileInputStream.read(salt);
-        return salt;
+    private void writeInitBlock(OutputStream fileOutputStream, byte[] salt, byte[] iv) throws IOException {
+        fileOutputStream.write(salt);
+        fileOutputStream.write(iv);
     }
 
-    private byte[] extractIV(InputStream fileInputStream) throws IOException {
-        byte[] iv = new byte[EncryptionService.BLOCK_LENGTH];
-        fileInputStream.read(iv);
-        return iv;
+    private byte[] generateIV() throws IOException {
+        byte[] vector = new byte[EncryptionService.BLOCK_LENGTH];
+        try {
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.nextBytes(vector);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        return vector;
+
     }
 
     private void processStreams(InputStream in, OutputStream out) throws IOException {
-        long totalBytesToProcess = encryptionSettings.inputFile.length();
+        long totalBytesTpProcess = encryptionSettings.inputFile.length();
         long bytesProcessed = 0;
 
         byte[] buffer = new byte[EncryptionService.STREAM_BUFFER_LENGTH];
@@ -106,9 +115,8 @@ public class DecryptionRunnable implements Runnable {
             out.write(buffer, 0, bytes);
 
             bytesProcessed += bytes;
-            progress.updateProgress((int) ((100.0 * bytesProcessed) / totalBytesToProcess));
+            progress.updateProgress((int) ((100.0 * bytesProcessed) / totalBytesTpProcess));
         }
-        progress.setFinished();
     }
 
     private byte[] generateKey(String password, byte[] salt) {
@@ -118,6 +126,17 @@ public class DecryptionRunnable implements Runnable {
             final SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             return skf.generateSecret(spec).getEncoded();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private byte[] generateSalt() {
+        try {
+            final SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+            final byte[] salt = new byte[16];
+            sr.nextBytes(salt);
+            return salt;
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }

@@ -13,17 +13,10 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
-
-import java.io.File;
+package com.github.flbaue.jcrypttool.v2.newui.view;
 
 /**
- * Created by Florian Bauer on 02.01.15.
+ * Created by Florian Bauer on 19.01.15.
  */
-public class EncryptionSettings {
-
-    public File inputFile;
-    public File outputFile;
-    public String password;
-
+public class MainWindowController {
 }

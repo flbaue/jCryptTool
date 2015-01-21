@@ -13,7 +13,7 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool;
+package com.github.flbaue.jcrypttool.v1;
 
 /**
  * Created by Florian Bauer on 02.01.15.

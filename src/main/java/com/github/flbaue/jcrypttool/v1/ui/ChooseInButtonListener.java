@@ -13,7 +13,7 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.ui;
+package com.github.flbaue.jcrypttool.v1.ui;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

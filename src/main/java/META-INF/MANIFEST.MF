@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.github.flbaue.jcrypttool.ui.ConsoleStarter
+Main-Class: com.github.flbaue.jcrypttool.v1.ui.ConsoleStarter
 
