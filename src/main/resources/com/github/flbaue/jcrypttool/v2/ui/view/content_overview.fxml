@@ -22,7 +22,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
             prefHeight="400.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/8"
-            fx:controller="com.github.flbaue.jcrypttool.v2.newui.view.ContentOverviewController">
+            fx:controller="com.github.flbaue.jcrypttool.v2.ui.view.ContentOverviewController">
     <center>
         <TreeTableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <columns>

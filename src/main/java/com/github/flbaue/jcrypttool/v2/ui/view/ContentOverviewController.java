@@ -13,9 +13,9 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.v2.newui.view;
+package com.github.flbaue.jcrypttool.v2.ui.view;
 
-import com.github.flbaue.jcrypttool.v2.newui.JCryptApp;
+import com.github.flbaue.jcrypttool.v2.ui.JCryptApp;
 
 /**
  * Created by Florian Bauer on 19.01.15.

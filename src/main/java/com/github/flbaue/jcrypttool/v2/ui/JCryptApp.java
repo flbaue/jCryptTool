@@ -13,12 +13,12 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.v2.newui;
+package com.github.flbaue.jcrypttool.v2.ui;
 
 import com.github.flbaue.jcrypttool.v2.domain.AesEncryptionService;
 import com.github.flbaue.jcrypttool.v2.domain.VaultService;
-import com.github.flbaue.jcrypttool.v2.newui.view.ContentOverviewController;
-import com.github.flbaue.jcrypttool.v2.newui.view.VaultOverviewController;
+import com.github.flbaue.jcrypttool.v2.ui.view.ContentOverviewController;
+import com.github.flbaue.jcrypttool.v2.ui.view.VaultOverviewController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

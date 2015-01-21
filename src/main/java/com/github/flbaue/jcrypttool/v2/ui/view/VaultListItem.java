@@ -13,9 +13,9 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.v2.newui.view;
+package com.github.flbaue.jcrypttool.v2.ui.view;
 
-import com.github.flbaue.jcrypttool.v2.newui.model.Vault;
+import com.github.flbaue.jcrypttool.v2.ui.model.Vault;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.VBox;

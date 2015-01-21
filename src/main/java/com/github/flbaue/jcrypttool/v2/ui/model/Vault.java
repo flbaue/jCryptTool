@@ -13,7 +13,7 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.v2.newui.model;
+package com.github.flbaue.jcrypttool.v2.ui.model;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

@@ -13,10 +13,10 @@
  *    limitations under the License.
  */
 
-package com.github.flbaue.jcrypttool.v2.newui.view;
+package com.github.flbaue.jcrypttool.v2.ui.view;
 
-import com.github.flbaue.jcrypttool.v2.newui.JCryptApp;
-import com.github.flbaue.jcrypttool.v2.newui.model.Vault;
+import com.github.flbaue.jcrypttool.v2.ui.JCryptApp;
+import com.github.flbaue.jcrypttool.v2.ui.model.Vault;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
