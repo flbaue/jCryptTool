@@ -17,8 +17,10 @@
 
 
 
+
+
 apply plugin: 'java'
-apply plugin: 'macAppBundle'
+/*apply plugin: 'macAppBundle'*/
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -42,12 +44,12 @@ dependencies {
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.51'
     compile group: 'org.controlsfx', name: 'controlsfx', version: '8.20.8'
 }
-
+/*
 macAppBundle {
     mainClassName = "com.github.flbaue.jcrypttool.v2.ui.JCryptApp"
     bundleJRE = false
 }
-
+*/
 jar {
     manifest {
         attributes 'Main-Class': 'com.github.flbaue.jcrypttool.v2.ui.JCryptApp'
